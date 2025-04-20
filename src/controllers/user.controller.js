@@ -7,7 +7,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 const registerUser = asyncHandler(async (req,res)=>{
     // 1. getting user details from frontend (if from form or json use req.body())
     const {fullName,email,username,password} = req.body
-    console.log(fullName,email);
+    // console.log(fullName,email);
     
     //2. Validating if fields empty or not
     if([fullName,email,username,password].some((field)=>field?.trim() === "")){
@@ -15,8 +15,8 @@ const registerUser = asyncHandler(async (req,res)=>{
     }
 
     //3. Check if user already exists
-    const existingUser = User.findOne({
-        $or: [{ usernmae },{ email }]
+    const existingUser = await User.findOne({
+        $or: [{ username },{ email }]
     })
     if(existingUser){
         throw new ApiError(409,"User with same username or email already exists")
@@ -25,7 +25,14 @@ const registerUser = asyncHandler(async (req,res)=>{
     //4. Check for images and avatars
     //req.files access given by multer
     const avatarLocalPath = req.files?.avatar[0]?.path;
-    const coverImageLocalPath = req.files?.coverImage[0]?.path;
+    // const coverImageLocalPath = req.files?.coverImage[0]?.path;
+
+    let coverImageLocalPath
+    if(req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length>0){
+        coverImageLocalPath = req.files.coverImage[0].path;
+    }
+
+    // console.log(req.files)
 
     if(!avatarLocalPath){
         throw new ApiError(400,"Avatar File is required")
