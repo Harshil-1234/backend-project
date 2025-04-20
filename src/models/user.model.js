@@ -55,7 +55,7 @@ userSchema.pre("save", async function(next ) {
     // whenever any change is made this function will always run before saving data. Thus we used this if condition
     if(!this.isModified("password"))return next()
 
-    this.password = bcrypt.hash(this.password,10)
+    this.password = await bcrypt.hash(this.password,10)
     next()
 })
 
