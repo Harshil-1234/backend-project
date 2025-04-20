@@ -22,4 +22,11 @@ app.use(express.static("public"))
 
 app.use(cookieParser())
 
+// ROUTES Import
+import userRouter from "./routes/user.routes.js"
+
+// ROUTES Declaration
+// htpps://localhost:8000/api/v1/users/<route_name>
+app.use("/api/v1/users",userRouter)
+
 export {app}
